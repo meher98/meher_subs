@@ -29,7 +29,7 @@ builder.defineSubtitlesHandler(async ({ id, extra }) => {
             {
                 id: `${id}-s${s}e${e}-fr`,
                 lang: "fr",
-                url: `https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/${id}/s${s}e${e}.fr.srt`
+                url: `https://raw.githubusercontent.com/meher98/subs/refs/heads/main/${id}/s${s}e${e}.fr.srt`
             }
         ]
     }
