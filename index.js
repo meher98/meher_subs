@@ -11,6 +11,7 @@ const manifest = {
     idPrefixes: ["tt"]
 }
 
+
 const builder = new addonBuilder(manifest)
 
 builder.defineSubtitlesHandler(async ({ type, id, extra }) => {
@@ -29,23 +30,27 @@ builder.defineSubtitlesHandler(async ({ type, id, extra }) => {
     }
 
     console.log(`sous-tites pour ${imdbId} saison ${season} episode ${episode}`)
-
+    let result = { subtitles: [] }
     if (!season || !episode) {
-        return { subtitles: [] };
+        return result;
     }
 
     const s = String(season).padStart(2, "0");
     const e = String(episode).padStart(2, "0");
-
-    return {
-        subtitles: [
-            {
-                id: `${id}-s${s}e${e}-fr`,
-                lang: "fr",
-                url: `https://raw.githubusercontent.com/meher98/subs/main/${imdbId}/s${s}e${e}.fr.srt`
-            }
-        ]
-    };
+    const url = `https://raw.githubusercontent.com/meher98/subs/main/${imdbId}/s${s}e${e}.fr.srt`
+    res = await fetch(url, { method: "HEAD" })
+    if (res.ok) {
+        result = {
+            subtitles: [
+                {
+                    id: `${id}-s${s}e${e}-fr`,
+                    lang: "fr",
+                    url: url
+                }
+            ]
+        };
+    }
+    return result
 });
 
 const PORT = process.env.PORT || 7000
