@@ -14,7 +14,7 @@ const manifest = {
 
 const builder = new addonBuilder(manifest)
 
-builder.defineSubtitlesHandler(async ({ type, id, extra }) => {
+const serieOrAnimer = async (id, extra) => {
     // extra may contain season/episode or videoHash/videoSize depending on content
     if (extra?.season !== undefined) {
         season = extra.season;     // already a number
@@ -49,6 +49,35 @@ builder.defineSubtitlesHandler(async ({ type, id, extra }) => {
                 }
             ]
         };
+    }
+    return result
+}
+
+const movie = async (id) => {
+    console.log(`sous-tites pour film ${id}`)
+    let result = { subtitles: [] }
+    const url = `https://raw.githubusercontent.com/meher98/subs/main/${id}/${id}.fr.srt`
+    res = await fetch(url, { method: "HEAD" })
+    if (res.ok) {
+        result = {
+            subtitles: [
+                {
+                    id: `${id}-fr`,
+                    lang: "fr",
+                    url: url
+                }
+            ]
+        };
+    }
+    return result
+}
+
+builder.defineSubtitlesHandler(async ({ type, id, extra }) => {
+    let result
+    if (type === "movie") {
+        result = await movie(id)
+    } else {
+        result = await serieOrAnimer(id, extra)
     }
     return result
 });
